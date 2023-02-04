@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class Grammar {
 
@@ -20,8 +21,34 @@ public class Grammar {
     }
 
     public String generateString () {
-        StringBuffer word = new StringBuffer(S);
+        StringBuffer word = new StringBuffer();
+        word.append(S);
 
-        return null;
+        Random r = new Random();
+
+        while (!isWord(word.toString())) {
+            int nonterm = findNonTerminalChar(word);
+            int production = r.nextInt(0, P.get(word.charAt(nonterm)).size());
+            word.replace(nonterm, nonterm + 1, P.get(word.charAt(nonterm)).get(production));
+        }
+
+        return word.toString();
+    }
+
+    private boolean isWord (String arbitrary_word) {
+        String copy = arbitrary_word.toLowerCase();
+
+        if (copy.compareTo(arbitrary_word) == 0) {
+            return true;
+        } else return false;
+    }
+
+    private int findNonTerminalChar (StringBuffer sb) {
+        for (int i = 0; i < sb.length(); i++) {
+            if (Character.isUpperCase(sb.charAt(i))) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
