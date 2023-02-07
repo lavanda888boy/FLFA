@@ -1,6 +1,11 @@
+package grammar;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import automaton.FiniteAutomaton;
+import automaton.Transition;
 
 public class Grammar {
 
@@ -31,8 +36,27 @@ public class Grammar {
             int production = r.nextInt(0, P.get(word.charAt(nonterm)).size());
             word.replace(nonterm, nonterm + 1, P.get(word.charAt(nonterm)).get(production));
         }
-
+        
         return word.toString();
+    }
+
+    public FiniteAutomaton toFiniteAutomaton() {
+        List<Transition> transitions = new ArrayList<>();
+
+        for (Character state : this.P.keySet()) {
+            for (String str : P.get(state)) {
+                Transition t;
+
+                if (str.length() == 1) {
+                    t = new Transition(state, 'X', str.charAt(0));
+                } else {
+                    t = new Transition(state, str.charAt(1), str.charAt(0));
+                }
+                
+                transitions.add(t);
+            }
+        }
+        return new FiniteAutomaton(V_n + "X", V_t, transitions, this.S, V_n);
     }
 
     private boolean isWord (String arbitrary_word) {

@@ -3,6 +3,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import automaton.FiniteAutomaton;
+import automaton.Transition;
+import grammar.Grammar;
+
 public class Test {
     public static void main(String[] args) {
         
@@ -36,5 +40,12 @@ public class Test {
         Grammar grammar = new Grammar(V_n, V_t, productions, S);
 
         System.out.println(grammar.generateString());
+    
+        FiniteAutomaton f = grammar.toFiniteAutomaton();
+        for (Transition t : f.getTransitions()) {
+            System.out.println(t.getInitialState() + " " + t.getParameter() + " " + t.getEndState());
+        }
+
+        
     }
 }
