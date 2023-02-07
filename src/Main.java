@@ -7,7 +7,7 @@ import automaton.FiniteAutomaton;
 import automaton.Transition;
 import grammar.Grammar;
 
-public class Test {
+public class Main {
     public static void main(String[] args) {
         
         String V_n = "SRL";
@@ -39,13 +39,16 @@ public class Test {
 
         Grammar grammar = new Grammar(V_n, V_t, productions, S);
 
-        System.out.println(grammar.generateString());
-    
+        String w = grammar.generateString();
+        System.out.println(w);
+        
+        
         FiniteAutomaton f = grammar.toFiniteAutomaton();
+        /*
         for (Transition t : f.getTransitions()) {
             System.out.println(t.getInitialState() + " " + t.getParameter() + " " + t.getEndState());
-        }
+        }*/
 
-        
+        System.out.println(f.wordIsValid("adefedd"));
     }
 }
