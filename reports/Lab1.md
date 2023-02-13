@@ -50,6 +50,24 @@
 
 ## Implementation description
 
+* The following code corresponds to the variant number 2
+
+  VN={S, R, L}, 
+  
+  VT={a, b, c, d, e, f},
+  
+  P={ 
+    S → aS
+    S → bS
+    S → cR
+    S → dL
+    R → dL
+    R → e
+    L → fL
+    L → eL
+    L → d
+  }
+
 * The `Grammar` class is implemented according to the definition of a language's grammar. It is being caracterized by the four main parameters:
 set of terminal characters `(V_n)`, set of non-terminal characters `(V_t)`, set of productions `(P)` and the start symbol `(S)`. The first two parameters
 are presented as two String attributes of the class; a map represents the productions set (mapping each non-terminal character to the possible resulting
