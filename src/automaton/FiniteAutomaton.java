@@ -6,20 +6,20 @@ public class FiniteAutomaton {
     
     private String Q;
     private String sigma_alphabet;
-    private List<Transition> beta;
+    private List<Transition> delta;
     private char q0;
     private Set F;
 
-    public FiniteAutomaton (String Q, String sigma, List<Transition> beta, char q0, Set F) {
+    public FiniteAutomaton (String Q, String sigma, List<Transition> delta, char q0, Set F) {
         this.Q = Q;
         sigma_alphabet = sigma;
-        this.beta = beta;
+        this.delta = delta;
         this.q0 = q0;
         this.F = F;
     }
 
     public List<Transition> getTransitions () {
-        return this.beta;
+        return this.delta;
     }
 
     public boolean wordIsValid (String word) {
@@ -45,7 +45,7 @@ public class FiniteAutomaton {
     }
 
     private char existsTransition (char state, char parameter) {
-        for (Transition t : beta) {
+        for (Transition t : delta) {
             if (t.getInitialState() == state  &&  t.getParameter() == parameter) {
                 return t.getEndState();
             }
