@@ -91,8 +91,7 @@ public String generateString () {
         return word.toString();
     }
 ```
-This method also requires two additional methods: one for checking if the string represents a word (contains only terminal symbols) and another one for finding
-the remaining non-ternminal character in the modified string.
+This method also requires two additional methods: one for checking if the string represents a word (contains only terminal symbols) and another one for finding the remaining non-ternminal character in the modified string.
 ```
 private boolean isWord (String arbitrary_word) {
         String copy = arbitrary_word.toLowerCase();
@@ -180,9 +179,7 @@ public class Transition {
     }
 ```
 
-* The final implemented method in this laboratory work checks if the arbitrary string can be obtained using the given final automaton. Basically, it iterates
-through the input string, taking its characters one by one. At the same time the program keeps track of the current non-terminal symbol by applying transitions
-to it (starting from 'S'). If the conditions are respected and the final transition leads to a terminal state then the string is valid, otherwise not.
+* The final implemented method in this laboratory work checks if the arbitrary string can be obtained using the given final automaton. Basically, it iterates through the input string, taking its characters one by one. At the same time the program keeps track of the current non-terminal symbol by applying transitions to it (starting from 'S'). If the conditions are respected and the final transition leads to a terminal state then the string is valid, otherwise not.
 ```
 public boolean wordIsValid (String word) {
         char state = 'S';
@@ -219,14 +216,13 @@ private char existsTransition (char state, char parameter) {
 ```
 
 ## Conclusions / Screenshots / Results
-The code of the laboratory work was written in Java programming language and here is the example of output of the `Main` class. Tjhe genrated string and the
-attributes of the finite automaton can be seen in the terminal window.
+The code of the laboratory work was written in Java programming language and here is the example of output of the `Main` class. The generated string, the attributes of the finite automaton and the result of the isWord() method applied to the generated string can be seen in the terminal window.
+
+<p align=center><img src=https://github.com/lavanda888boy/FLFA_labs/blob/ff64b3a324a54e7784b69c64e106584be3d44234/screenshots/Lab_1/results.png /></p>
 
 To sum up the entire laboratory work, I've studied many important concepts by implementing them using programming languages. I also applied my knowledge of 
 data structures to optimixe the implementation. For instance, I used map data structure to define the set of productions for the given grammar. Moreover, I
-noticed that the finite automaton itself can be presented as a directed weighted graph (where the weights will be actually terminal symbols). This knowledge
-gives me the opportuntity how to design a lexer and optimize it for identifying the tokens of a language (this concept will be especially useful in my current
-PBL project on designing a formal language).
+noticed that the finite automaton itself can be presented as a directed weighted graph (where the weights will be actually terminal symbols). This knowledge gives me the opportuntity how to design a lexer and optimize it for identifying the tokens of a language (this concept will be especially useful in my current PBL project on designing a formal language).
 
 
 ## References
