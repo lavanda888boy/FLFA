@@ -44,11 +44,11 @@ public class Main {
         
         
         FiniteAutomaton f = grammar.toFiniteAutomaton();
-        /*
+        
         for (Transition t : f.getTransitions()) {
             System.out.println(t.getInitialState() + " " + t.getParameter() + " " + t.getEndState());
-        }*/
+        }
 
-        System.out.println(f.wordIsValid("adefedd"));
+        System.out.println(f.wordIsValid(w));
     }
 }

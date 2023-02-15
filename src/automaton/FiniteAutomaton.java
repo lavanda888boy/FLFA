@@ -26,9 +26,11 @@ public class FiniteAutomaton {
         char state = 'S';
         int index = 0;
         char endState;
+
+        int marker = 0;
         
         while (index < word.length() - 1) {
-            endState = existsTransition(state, word.charAt(index));
+            endState = existsTransition(state, word.charAt(index), marker);
             if (endState != '-') {
                 state = endState;
             } else return false;
@@ -36,7 +38,8 @@ public class FiniteAutomaton {
             index++;
         }
 
-        endState = existsTransition(state, word.charAt(index)); 
+        marker = 1;
+        endState = existsTransition(state, word.charAt(index), marker); 
         if (this.F.contains(endState)) {
             return true;
         }
@@ -44,9 +47,14 @@ public class FiniteAutomaton {
         return false;
     }
 
-    private char existsTransition (char state, char parameter) {
+    private char existsTransition (char state, char parameter, int marker) {
         for (Transition t : delta) {
             if (t.getInitialState() == state  &&  t.getParameter() == parameter) {
+                if (marker == 0) {
+                    if (t.getEndState() == 'X') {
+                        return '-';
+                    }
+                }
                 return t.getEndState();
             }
         }
