@@ -45,5 +45,6 @@ public class Main {
         FiniteAutomaton fa = new FiniteAutomaton(Q, sigma, ts, q0, finalStates);
         Grammar g = new Grammar(fa);
         System.out.println(g.getProductions());
+        System.out.println(fa.isDeterministic());
     }
 }

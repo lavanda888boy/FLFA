@@ -42,6 +42,33 @@ public class FiniteAutomaton {
         return this.delta;
     }
 
+    public boolean isDeterministic () {
+        if (existsEpsilonTransition()) {
+            return false;
+        } else {
+            Transition curr, next;
+
+            for (int i = 0; i < delta.size() - 1; i++) {
+                curr = delta.get(i);
+                next = delta.get(i + 1);
+                if (curr.getInitialState().compareTo(next.getInitialState()) == 0  &&  curr.getParameter() == next.getParameter()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public boolean existsEpsilonTransition () {
+        for (Transition transition : delta) {
+            if (transition.getParameter() == 'e') {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean wordIsValid (String word) {
         String state = "S";
         int index = 0;
