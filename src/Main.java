@@ -10,30 +10,34 @@ import grammar.Grammar;
 public class Main {
     public static void main(String[] args) {
         
-        String V_n = "SRL";
+        List<String> V_n = new ArrayList<>();
+        V_n.add("S");
+        V_n.add("R");
+        V_n.add("L");
+
         String V_t = "abcdef";
 
-        Map<Character, List<String>> productions = new HashMap<>();
+        Map<String, List<String>> productions = new HashMap<>();
 
         List<String> p1 = new ArrayList<>();
         p1.add("aS");
         p1.add("bS");
         p1.add("cR");
         p1.add("dL");
-        productions.put('S', p1);
+        productions.put("S", p1);
 
         List<String> p2 = new ArrayList<>();
 
         p2.add("cR");
         p2.add("e");
-        productions.put('R', p2);
+        productions.put("R", p2);
 
         List<String> p3 = new ArrayList<>();
 
         p3.add("fL");
         p3.add("eL");
         p3.add("d");
-        productions.put('L', p3);
+        productions.put("L", p3);
 
         char S = 'S';
 

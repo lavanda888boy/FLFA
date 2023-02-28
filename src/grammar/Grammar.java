@@ -11,19 +11,23 @@ import automaton.Transition;
 
 public class Grammar {
 
-    private String V_n;
+    private List<String> V_n;
     private String V_t;
-    private Map<Character, List<String>> P;
+    private Map<String, List<String>> P;
     private char S;
 
-    public Grammar (String V_n, String V_t, Map<Character, List<String>> P, char S) {
+    public Grammar (List<String> V_n, String V_t, Map<String, List<String>> P, char S) {
         this.V_n = V_n;
         this.V_t = V_t;
         this.P = P;
         this.S = S;
     }
+/* 
+    public Grammar (FiniteAutomaton fa) {
+        this(V_n, V_t, P, S);
+    }*/
 
-    public Map<Character, List<String>> getProductions () {
+    public Map<String, List<String>> getProductions () {
         return this.P;
     }
 
@@ -35,8 +39,8 @@ public class Grammar {
 
         while (!isWord(word.toString())) {
             int nonterm = findNonTerminalChar(word);
-            int production = r.nextInt(0, P.get(word.charAt(nonterm)).size());
-            word.replace(nonterm, nonterm + 1, P.get(word.charAt(nonterm)).get(production));
+            int production = r.nextInt(0, P.get(Character.toString(word.charAt(nonterm))).size());
+            word.replace(nonterm, nonterm + 1, P.get(Character.toString(word.charAt(nonterm))).get(production));
         }
 
         return word.toString();
@@ -45,29 +49,32 @@ public class Grammar {
     public FiniteAutomaton toFiniteAutomaton() {
         List<Transition> transitions = new ArrayList<>();
 
-        for (Character state : this.P.keySet()) {
+        for (String state : this.P.keySet()) {
             for (String str : P.get(state)) {
                 Transition t;
 
                 if (str.length() == 1) {
-                    t = new Transition(state, 'X', str.charAt(0));
+                    t = new Transition(state, "X", str.charAt(0));
                 } else {
-                    t = new Transition(state, str.charAt(1), str.charAt(0));
+                    t = new Transition(state, Character.toString(str.charAt(1)), str.charAt(0));
                 }
                 
                 transitions.add(t);
             }
         }
 
-        Set<Character> finalStates = new HashSet<>();
-        finalStates.add('X');
-        for (Character state : this.P.keySet()) {
+        Set<String> finalStates = new HashSet<>();
+        finalStates.add("X");
+        for (String state : this.P.keySet()) {
             if (this.P.get(state).size() == 1  &&  this.P.get(state).get(0).length() == 1) {
                 finalStates.add(state);
             }
         }
 
-        return new FiniteAutomaton(V_n + "X", V_t, transitions, this.S, finalStates);
+        List<String> Q = V_n;
+        Q.add("X");
+
+        return new FiniteAutomaton(Q, V_t, transitions, this.S, finalStates);
     }
 
     private boolean isWord (String arbitrary_word) {

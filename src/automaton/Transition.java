@@ -2,29 +2,29 @@ package automaton;
 
 public class Transition {
     
-    private char initialState;
-    private char endState;
+    private String initialState;
+    private String endState;
     private char parameter;
 
-    public Transition (char initialState, char endState, char parameter) {
+    public Transition (String initialState, String endState, char parameter) {
         this.initialState = initialState;
         this.endState = endState;
         this.parameter = parameter;
     }
 
-    public char getInitialState () {
+    public String getInitialState () {
         return this.initialState;
     }    
     
-    public void setInitialState (char initialState) {
+    public void setInitialState (String initialState) {
         this.initialState = initialState;
     }
 
-    public char getEndState () {
+    public String getEndState () {
         return this.endState;
     }    
     
-    public void setEndState (char endState) {
+    public void setEndState (String endState) {
         this.endState = endState;
     }
 

@@ -4,13 +4,13 @@ import java.util.Set;
 
 public class FiniteAutomaton {
     
-    private String Q;
+    private List<String> Q;
     private String sigma_alphabet;
     private List<Transition> delta;
     private char q0;
-    private Set F;
+    private Set<String> F;
 
-    public FiniteAutomaton (String Q, String sigma, List<Transition> delta, char q0, Set F) {
+    public FiniteAutomaton (List<String> Q, String sigma, List<Transition> delta, char q0, Set<String> F) {
         this.Q = Q;
         sigma_alphabet = sigma;
         this.delta = delta;
@@ -18,20 +18,40 @@ public class FiniteAutomaton {
         this.F = F;
     }
 
+    public List<String> getQ () {
+        return this.Q;
+    }
+
+    public String getSigmaAlphabet () {
+        return sigma_alphabet;
+    }
+
+    public List<Transition> getDelta () {
+        return this.delta;
+    }
+
+    public char getQ0 () {
+        return this.q0;
+    }
+
+    public Set<String> getF () {
+        return this.F;
+    }
+
     public List<Transition> getTransitions () {
         return this.delta;
     }
 
     public boolean wordIsValid (String word) {
-        char state = 'S';
+        String state = "S";
         int index = 0;
-        char endState;
+        String endState;
 
         int marker = 0;
         
         while (index < word.length() - 1) {
             endState = existsTransition(state, word.charAt(index), marker);
-            if (endState != '-') {
+            if (endState != "-") {
                 state = endState;
             } else return false;
 
@@ -47,17 +67,17 @@ public class FiniteAutomaton {
         return false;
     }
 
-    private char existsTransition (char state, char parameter, int marker) {
+    private String existsTransition (String state, char parameter, int marker) {
         for (Transition t : delta) {
-            if (t.getInitialState() == state  &&  t.getParameter() == parameter) {
+            if (t.getInitialState().compareTo(state) == 0  &&  t.getParameter() == parameter) {
                 if (marker == 0) {
-                    if (t.getEndState() == 'X') {
-                        return '-';
+                    if (t.getEndState().compareTo("X") == 0) {
+                        return "-";
                     }
                 }
                 return t.getEndState();
             }
         }
-        return '-';
+        return "-";
     }
 }
