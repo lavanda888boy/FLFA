@@ -1,5 +1,6 @@
 package grammar;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -14,18 +15,40 @@ public class Grammar {
     private List<String> V_n;
     private String V_t;
     private Map<String, List<String>> P;
-    private char S;
+    private String S;
 
-    public Grammar (List<String> V_n, String V_t, Map<String, List<String>> P, char S) {
+    public Grammar (List<String> V_n, String V_t, Map<String, List<String>> P, String S) {
         this.V_n = V_n;
         this.V_t = V_t;
         this.P = P;
         this.S = S;
     }
-/* 
+ 
     public Grammar (FiniteAutomaton fa) {
-        this(V_n, V_t, P, S);
-    }*/
+        this(fa.getQ(), fa.getSigmaAlphabet(), null, fa.getQ0());
+
+        List<Transition> transitions = fa.getTransitions();
+        Map<String, List<String>> productions = new HashMap<>();
+
+        String st, endst;
+        char param;
+
+        for (Transition transition : transitions) {
+            st = transition.getInitialState();
+            endst = transition.getEndState();
+            param = transition.getParameter();
+
+            if (productions.containsKey(transition.getInitialState())) {
+                productions.get(st).add(param + endst);
+            } else {
+                List<String> endStates = new ArrayList<>();
+                endStates.add(param + endst);
+                productions.put(st, endStates);
+            }
+        }
+
+        this.P = productions;
+    }
 
     public Map<String, List<String>> getProductions () {
         return this.P;

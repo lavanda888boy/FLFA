@@ -7,10 +7,10 @@ public class FiniteAutomaton {
     private List<String> Q;
     private String sigma_alphabet;
     private List<Transition> delta;
-    private char q0;
+    private String q0;
     private Set<String> F;
 
-    public FiniteAutomaton (List<String> Q, String sigma, List<Transition> delta, char q0, Set<String> F) {
+    public FiniteAutomaton (List<String> Q, String sigma, List<Transition> delta, String q0, Set<String> F) {
         this.Q = Q;
         sigma_alphabet = sigma;
         this.delta = delta;
@@ -30,7 +30,7 @@ public class FiniteAutomaton {
         return this.delta;
     }
 
-    public char getQ0 () {
+    public String getQ0 () {
         return this.q0;
     }
 
