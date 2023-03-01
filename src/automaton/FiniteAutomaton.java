@@ -1,5 +1,9 @@
 package automaton;
+
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 public class FiniteAutomaton {
@@ -42,6 +46,7 @@ public class FiniteAutomaton {
         return this.delta;
     }
 
+
     public boolean isDeterministic () {
         if (existsEpsilonTransition()) {
             return false;
@@ -60,7 +65,8 @@ public class FiniteAutomaton {
         return true;
     }
 
-    public boolean existsEpsilonTransition () {
+
+    private boolean existsEpsilonTransition () {
         for (Transition transition : delta) {
             if (transition.getParameter() == 'e') {
                 return true;
@@ -68,6 +74,58 @@ public class FiniteAutomaton {
         }
         return false;
     }
+
+
+    public FiniteAutomaton convertToDFA () {
+        Set<String> visited_states = new HashSet<>();
+        Queue<String> appeared_states = new LinkedList<>();
+        List<String[]> state_table = new LinkedList<>();
+
+        int counter = 0;
+
+        do {
+            String[] line = new String[sigma_alphabet.length() + 1];
+            
+            if (counter == 0) {
+                line[0] = "q0";
+                counter++;
+            } else {
+                line[0] = appeared_states.poll();
+            }
+
+            System.out.println(line[0]);
+            String[] component_states = line[0].split(", ");
+
+            for (int i = 1; i < line.length; i++) {
+                Set<String> composite_state = new HashSet<>();
+        
+                for (int j = 0; j < component_states.length; j++) {
+                    Set<String> s = new HashSet<>();
+                    
+                    for (Transition transition : delta) {
+                        if (transition.getInitialState().compareTo(component_states[j]) == 0  &&  transition.getParameter() == sigma_alphabet.charAt(i - 1)) {
+                            s.add(transition.getEndState());
+                        }
+                    }
+                    composite_state.addAll(s);
+                }
+
+                String resulting_compoString = String.join(", ", composite_state);
+
+                if (!visited_states.contains(resulting_compoString) && resulting_compoString.compareTo("") != 0) {
+                    visited_states.add(resulting_compoString);
+                    appeared_states.add(resulting_compoString);
+                }
+
+                line[i] = resulting_compoString;
+            }
+
+            state_table.add(line);
+        } while (!appeared_states.isEmpty());
+
+        return null;
+    }
+
 
     public boolean wordIsValid (String word) {
         String state = "S";
@@ -93,6 +151,7 @@ public class FiniteAutomaton {
 
         return false;
     }
+
 
     private String existsTransition (String state, char parameter, int marker) {
         for (Transition t : delta) {

@@ -16,7 +16,7 @@ public class Main {
         Q.add("q2");
         Q.add("q3");
 
-        String sigma = "acb";
+        String sigma = "abc";
 
         List<Transition> ts = new ArrayList<>();
         Transition t = new Transition("q0", "q1", 'a');
@@ -46,5 +46,7 @@ public class Main {
         Grammar g = new Grammar(fa);
         System.out.println(g.getProductions());
         System.out.println(fa.isDeterministic());
+
+        fa.convertToDFA();
     }
 }

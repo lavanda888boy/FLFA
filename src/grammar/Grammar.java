@@ -1,4 +1,5 @@
 package grammar;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,6 +55,7 @@ public class Grammar {
         return this.P;
     }
 
+
     public String generateString () {
         StringBuffer word = new StringBuffer();
         word.append(S);
@@ -68,6 +70,7 @@ public class Grammar {
 
         return word.toString();
     }
+
 
     public FiniteAutomaton toFiniteAutomaton() {
         List<Transition> transitions = new ArrayList<>();
@@ -100,6 +103,7 @@ public class Grammar {
         return new FiniteAutomaton(Q, V_t, transitions, this.S, finalStates);
     }
 
+
     private boolean isWord (String arbitrary_word) {
         String copy = arbitrary_word.toLowerCase();
 
@@ -107,6 +111,7 @@ public class Grammar {
             return true;
         } else return false;
     }
+
 
     private int findNonTerminalChar (StringBuffer sb) {
         for (int i = 0; i < sb.length(); i++) {
