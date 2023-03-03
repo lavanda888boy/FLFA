@@ -47,6 +47,10 @@ public class Main {
         System.out.println(g.getProductions());
         System.out.println(fa.isDeterministic());
 
-        fa.convertToDFA();
+        FiniteAutomaton ftest = fa.convertToDFA();
+        for (Transition tr : ftest.getDelta()) {
+            System.out.println(tr.getInitialState() + " " + tr.getParameter() + " " + tr.getEndState());
+        }
+        System.out.println(ftest.getF());
     }
 }

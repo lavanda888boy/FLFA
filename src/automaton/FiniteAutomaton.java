@@ -1,5 +1,6 @@
 package automaton;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -93,7 +94,6 @@ public class FiniteAutomaton {
                 line[0] = appeared_states.poll();
             }
 
-            System.out.println(line[0]);
             String[] component_states = line[0].split(", ");
 
             for (int i = 1; i < line.length; i++) {
@@ -110,20 +110,44 @@ public class FiniteAutomaton {
                     composite_state.addAll(s);
                 }
 
-                String resulting_compoString = String.join(", ", composite_state);
+                if (composite_state.size() != 0) {
+                    String resulting_compoString = String.join(", ", composite_state);
 
-                if (!visited_states.contains(resulting_compoString) && resulting_compoString.compareTo("") != 0) {
-                    visited_states.add(resulting_compoString);
-                    appeared_states.add(resulting_compoString);
+                    if (!visited_states.contains(resulting_compoString) && resulting_compoString.compareTo("") != 0) {
+                        visited_states.add(resulting_compoString);
+                        appeared_states.add(resulting_compoString);
+                    }
+
+                    line[i] = resulting_compoString;
                 }
-
-                line[i] = resulting_compoString;
             }
 
             state_table.add(line);
         } while (!appeared_states.isEmpty());
 
-        return null;
+        List<String> qList = new ArrayList<>(visited_states);
+        Set<String> newF = new HashSet<>();
+
+        for (String vState : visited_states) {
+            for (String fState : F) {
+                if (vState.contains(fState)) {
+                    newF.add(vState);
+                    break;
+                }
+            }
+        }
+
+        List<Transition> newDelta = new ArrayList<>();
+        Transition t;
+        for (String[] line : state_table) {
+            for (int index = 1; index < line.length; index++) {
+                if (line[index] != null) {
+                    t = new Transition(line[0], line[index], sigma_alphabet.charAt(index - 1));
+                    newDelta.add(t);
+                }
+            }
+        }
+        return new FiniteAutomaton(qList, sigma_alphabet, newDelta, "q0", newF);
     }
 
 
