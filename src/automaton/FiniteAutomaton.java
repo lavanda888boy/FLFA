@@ -83,7 +83,6 @@ public class FiniteAutomaton {
         List<String[]> state_table = new LinkedList<>();
 
         int counter = 0;
-
         do {
             String[] line = new String[sigma_alphabet.length() + 1];
             
@@ -121,7 +120,6 @@ public class FiniteAutomaton {
                     line[i] = resulting_compoString;
                 }
             }
-
             state_table.add(line);
         } while (!appeared_states.isEmpty());
 

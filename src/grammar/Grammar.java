@@ -104,6 +104,67 @@ public class Grammar {
     }
 
 
+    public int determineChomskyType () {
+        if (checkThirdType()) {
+            return 3;
+        } else if (checkSecondType()) {
+            return 2;
+        } else if (checkFirstType()) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+
+    private boolean checkThirdType () {
+        List<String> productions;
+        for (String state : this.P.keySet()) {
+            if (state.length() > 1) {
+                return false;
+            }
+
+            productions = this.P.get(state);
+            for (String prod : productions) {
+                if (prod.length() > 2) {
+                    return false;
+                } else if (prod.length() == 2  &&  (Character.isUpperCase(prod.charAt(0)) || Character.isLowerCase(prod.charAt(1)))) {
+                    return false;
+                } else if (prod.length() == 1  &&  Character.isUpperCase(prod.charAt(0))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    private boolean checkSecondType () {
+        for (String state : this.P.keySet()) {
+            if (state.length() > 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    private boolean checkFirstType () {
+        List<String> productions;
+        for (String state : this.P.keySet()) {
+            productions = this.P.get(state);
+
+            for (String prod : productions) {
+                if ((state.length() > prod.length())  ||  prod.compareTo("e") == 0) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
     private boolean isWord (String arbitrary_word) {
         String copy = arbitrary_word.toLowerCase();
 

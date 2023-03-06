@@ -1,6 +1,8 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import automaton.FiniteAutomaton;
@@ -9,7 +11,7 @@ import grammar.Grammar;
 
 public class Main {
     public static void main(String[] args) {
-        
+        /*
         List<String> Q = new ArrayList<>();
         Q.add("q0");
         Q.add("q1");
@@ -52,5 +54,39 @@ public class Main {
             System.out.println(tr.getInitialState() + " " + tr.getParameter() + " " + tr.getEndState());
         }
         System.out.println(ftest.getF());
+        */
+
+        List<String> V_n = new ArrayList<>();
+        V_n.add("S");
+        V_n.add("R");
+        V_n.add("L");
+        String V_t = "abcdef";
+
+        Map<String, List<String>> productions = new HashMap<>();
+
+        List<String> p1 = new ArrayList<>();
+        p1.add("aS");
+        p1.add("bS");
+        p1.add("cR");
+        p1.add("dL");
+        productions.put("S", p1);
+
+        List<String> p2 = new ArrayList<>();
+
+        p2.add("cR");
+        p2.add("e");
+        productions.put("R", p2);
+
+        List<String> p3 = new ArrayList<>();
+
+        p3.add("fL");
+        p3.add("eL");
+        p3.add("d");
+        productions.put("L", p3);
+
+        String S = "S";
+
+        Grammar grammar = new Grammar(V_n, V_t, productions, S);
+        System.out.println(grammar.determineChomskyType());
     }
 }
