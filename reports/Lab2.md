@@ -6,8 +6,19 @@
 ----
 
 ## Theory
+`Chomsky hierarchy` is the set of rules dividing the grammars into four distinct categories.
 
+* `Type 0` grammars generate recursively enumerable languages. The productions have no restrictions. They are any phase structure grammar including all formal grammars. They generate the languages that are recognized by a Turing machine. The productions can be in the form of α → β where α is a string of terminals and nonterminals with at least one non-terminal and α cannot be null. β is a string of terminals and non-terminals.
 
+* `Type 1` grammars generate context-sensitive languages. The productions must be in the form α A β → α γ β, where A ∈ N (Non-terminal) and α, β, γ ∈ (T ∪ N)* (Strings of terminals and non-terminals). The strings α and β may be empty, but γ must be non-empty. The rule S → ε is allowed if S does not appear on the right side of any rule.
+
+* `Type 2` grammars generate context-free languages. The productions must be in the form A → γ, where A ∈ N (Non terminal) and γ ∈ (T ∪ N)* (String of terminals and non-terminals).
+
+* `Type 3` grammars generate regular languages. Type-3 grammars must have a single non-terminal on the left-hand side and a right-hand side consisting of a single terminal or single terminal followed by a single non-terminal. The productions must be in the form X → a or X → aY, where X, Y ∈ N (Non terminal) and a ∈ T (Terminal). The rule S → ε is allowed if S does not appear on the right side of any rule.
+
+In `DFA` (deterministic FA), there is exactly one transition from any state of finite automata for each input symbol. It accepts the string by halting at a final state, and it rejects it by halting at a non-final state.
+
+In `NFA` (non-deterministic FA), there are zero or more transitions from any state of finite automata for each input symbol (or if there are e-transitions).
 
 ## Objectives:
 
@@ -122,7 +133,7 @@ public boolean isDeterministic () {
 }
 ```
 
-* Finally, the most difficult part of this laboratory work was to perform a conversion from NFA into DFA. For that purpose I used the algorithm presented at the lectures. Having the list of transitions in the default automaton we start iterating through each of its states, making tranforms, starting from the state `q0`. Each iteration represents an array containing the state which is being processed and the resulting states corresponding to the given transition parameters (terminal symbols).
+* Finally, the most difficult part of this laboratory work was to perform a conversion from NFA into DFA. For that purpose I used the algorithm presented at the lectures. Having the list of transitions in the default automaton we start iterating through each of its states, making tranforms, starting from the state `q0`. Each iteration represents an array containing the state which is being processed and the resulting states corresponding to the given transition parameters (terminal symbols). The states which where already worked out are added into the `visited_states` and the states which are still waiting to be processed into the `appeared states` queue. The "array" operation is being done until there are no states inside the queue. Then the arrays are added into the `states_table` which is then used to generate a new object of type `FiniteAutomaton`.
 
 ```
 public FiniteAutomaton convertToDFA () {
