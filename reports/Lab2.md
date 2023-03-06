@@ -185,6 +185,25 @@ public FiniteAutomaton convertToDFA () {
 ```
 
 ## Conclusions / Screenshots / Results
+To sum up, in this laboratory work I learned the difference between various types of grammar according to Chomsky hierarchy. I also worked with non-deterministic and deterministic finite automata in order to study the algorithm of their conversion. This knowledge of the grammar and automata segregation will help me a lot in the tasks where the DFA will be needed, for instance. Moreover, it will be quite handy in writing the lexer for the current PBL project and the corresponding DSL.
+To proove my words I will leave a snippet of output which my program is generating.
+Firstly, the productions of the grammar is printed (after automaton transformation). Secondly, the result of the function identifying determinism of the automaton is presented. Finally, the productions of the converted DFA can be seen (iniital state, parameter, end state).
+
+* {q1=[bq2, bq3], q2=[cq3], q3=[aq3, bq4], q0=[aq1]}
+* false
+* q0 a q1
+
+    q1 b q2, q3
+    
+    q2, q3 a q3
+    
+    q2, q3 b q4
+    
+    q2, q3 c q3
+    
+    q3 a q3
+    
+    q3 b q4
 
 
 ## References
