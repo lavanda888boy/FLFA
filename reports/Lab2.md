@@ -6,7 +6,7 @@
 ----
 
 ## Theory
-If needed, but it should be written by the author in her/his words.
+
 
 
 ## Objectives:
@@ -35,20 +35,143 @@ If needed, but it should be written by the author in her/his words.
 
 ## Implementation description
 
-* About 2-3 sentences to explain each piece of the implementation.
+* In this laboratory work I was working on the following automaton Q = {q0,q1,q2,q3,q4}, ∑ = {a,b,c}, F = {q4}, δ(q0,a) = q1, δ(q1,b) = q2, δ(q1,b) = q3, δ(q2,c) = q3, δ(q3,a) = q3, δ(q3,b) = q4.
 
-
-* Code snippets from your files.
+* The first implemented function identifies type of the given grammar according to the Chomsky hierarchy. For that purpose the set of productions is being investigated using three separate methods (the grammar is tested to be type 3, then type 2, then type 1). The conditions for the classification are a little bit simplified but are applied according to the definition. Here is the main determination function:
 
 ```
-public static void main() 
-{
-
+public int determineChomskyType () {
+    if (checkThirdType()) {
+        return 3;
+    } else if (checkSecondType()) {
+        return 2;
+    } else if (checkFirstType()) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 ```
 
-* If needed, screenshots.
+* And here is an example of one of the helper methods:
 
+```
+private boolean checkFirstType () {
+    List<String> productions;
+    for (String state : this.P.keySet()) {
+        productions = this.P.get(state);
+
+        for (String prod : productions) {
+            if ((state.length() > prod.length())  ||  prod.compareTo("e") == 0) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+```
+
+* The conversion of the finite automaton into a regular grammar is performed inside the newly added constructor in the `Grammar` class, which accepts as the parameter object of type `FiniteAutomaton`. The new constructor firstly calls the basic parametrized constructor and then transforms the list of transitions into the map of productions.
+
+```
+public Grammar (FiniteAutomaton fa) {
+    this(fa.getQ(), fa.getSigmaAlphabet(), null, fa.getQ0());
+
+    List<Transition> transitions = fa.getTransitions();
+    Map<String, List<String>> productions = new HashMap<>();
+
+    String st, endst;
+    char param;
+
+    for (Transition transition : transitions) {
+        st = transition.getInitialState();
+        endst = transition.getEndState();
+        param = transition.getParameter();
+
+        if (productions.containsKey(transition.getInitialState())) {
+            productions.get(st).add(param + endst);
+        } else {
+            List<String> endStates = new ArrayList<>();
+            endStates.add(param + endst);
+            productions.put(st, endStates);
+        }
+    }
+
+    this.P = productions;
+}
+```
+
+* Going further, the task of identifying whether the given finite automaton is deterministic or not is not that hard. It is only necessary to check if it contains epsilon transitions or has tramsitions to different states with the same parameter starting from a single state. In this case, obviously, the automatong will be non-deterministic.
+
+```
+public boolean isDeterministic () {
+    if (existsEpsilonTransition()) {
+        return false;
+    } else {
+        Transition curr, next;
+
+        for (int i = 0; i < delta.size() - 1; i++) {
+            curr = delta.get(i);
+            next = delta.get(i + 1);
+            if (curr.getInitialState().compareTo(next.getInitialState()) == 0  &&  curr.getParameter() == next.getParameter()) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+```
+
+* Finally, the most difficult part of this laboratory work was to perform a conversion from NFA into DFA. For that purpose I used the algorithm presented at the lectures. Having the list of transitions in the default automaton we start iterating through each of its states, making tranforms, starting from the state `q0`. Each iteration represents an array containing the state which is being processed and the resulting states corresponding to the given transition parameters (terminal symbols).
+
+```
+public FiniteAutomaton convertToDFA () {
+    Set<String> visited_states = new HashSet<>();
+    Queue<String> appeared_states = new LinkedList<>();
+    List<String[]> state_table = new LinkedList<>();
+
+    int counter = 0;
+    do {
+        String[] line = new String[sigma_alphabet.length() + 1];
+
+        if (counter == 0) {
+            line[0] = "q0";
+            counter++;
+        } else {
+            line[0] = appeared_states.poll();
+        }
+
+        String[] component_states = line[0].split(", ");
+
+        for (int i = 1; i < line.length; i++) {
+            Set<String> composite_state = new HashSet<>();
+
+            for (int j = 0; j < component_states.length; j++) {
+                Set<String> s = new HashSet<>();
+
+                for (Transition transition : delta) {
+                    if (transition.getInitialState().compareTo(component_states[j]) == 0  &&  transition.getParameter() == sigma_alphabet.charAt(i - 1)) {
+                        s.add(transition.getEndState());
+                    }
+                }
+                composite_state.addAll(s);
+            }
+
+            if (composite_state.size() != 0) {
+                String resulting_compoString = String.join(", ", composite_state);
+
+                if (!visited_states.contains(resulting_compoString) && resulting_compoString.compareTo("") != 0) {
+                    visited_states.add(resulting_compoString);
+                    appeared_states.add(resulting_compoString);
+                }
+
+                line[i] = resulting_compoString;
+            }
+        }
+        state_table.add(line);
+    } while (!appeared_states.isEmpty());
+    ...
+```
 
 ## Conclusions / Screenshots / Results
 
