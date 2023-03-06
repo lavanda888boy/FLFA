@@ -11,7 +11,7 @@ import grammar.Grammar;
 
 public class Main {
     public static void main(String[] args) {
-        /*
+        
         List<String> Q = new ArrayList<>();
         Q.add("q0");
         Q.add("q1");
@@ -53,9 +53,8 @@ public class Main {
         for (Transition tr : ftest.getDelta()) {
             System.out.println(tr.getInitialState() + " " + tr.getParameter() + " " + tr.getEndState());
         }
-        System.out.println(ftest.getF());
-        */
-
+        
+        /*
         List<String> V_n = new ArrayList<>();
         V_n.add("S");
         V_n.add("R");
@@ -88,5 +87,6 @@ public class Main {
 
         Grammar grammar = new Grammar(V_n, V_t, productions, S);
         System.out.println(grammar.determineChomskyType());
+        */
     }
 }

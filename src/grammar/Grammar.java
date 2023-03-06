@@ -160,7 +160,6 @@ public class Grammar {
                 }
             }
         }
-
         return true;
     }
 
