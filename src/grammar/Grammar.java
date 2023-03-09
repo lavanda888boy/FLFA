@@ -48,6 +48,13 @@ public class Grammar {
             }
         }
 
+        List<String> boofer_states;
+        for (String fst : fa.getF()) {
+            boofer_states = new ArrayList<>();
+            boofer_states.add("e");
+            productions.put(fst, boofer_states);
+        }
+
         this.P = productions;
     }
 
