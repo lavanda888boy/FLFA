@@ -1,3 +1,4 @@
+package analysis.lexer;
 
 public class Token {
 
