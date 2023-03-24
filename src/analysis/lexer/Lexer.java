@@ -17,7 +17,7 @@ public class Lexer {
         operators = new HashSet<>(Arrays.asList("AND", "OR", "NOT", "NOR", "NAND", "XOR", "XNOR"));
     }
 
-    public List<Token> analyze(String path) {
+    public List<Token> evaluate(String path) {
         List<Token> lexems = new ArrayList<>();
         String text = new String();
         
@@ -50,7 +50,6 @@ public class Lexer {
             } else if (tokens[i].compareTo(";") == 0) {
                 lexems.add(new Token(counter, "ENDLINE", tokens[i]));
             } else if (tokens[i].compareTo(tokens[i].toLowerCase()) == 0) {
-                // TODO: fix var_name flag detection
                 lexems.add(new Token(counter, "VAR_NAME", tokens[i]));
             } else {
                 if (tokens[i].compareTo(" ") != 0) {
@@ -74,7 +73,9 @@ public class Lexer {
 
             if (Character.isLetter(curr) && !Character.isLetter(next) && next != ' ') {
                 sb.append(" ");
-            } else if (curr == '=' || curr == '(' || curr == ')') {
+            } else if (curr == '(' || curr == ')') {
+                sb.append(" ");
+            } else if (curr == '=' && next != ' ') {
                 sb.append(" ");
             } else if ((Character.isUpperCase(curr) && Character.isLowerCase(next)) 
                 || (Character.isUpperCase(next) && Character.isLowerCase(curr))) {

@@ -13,7 +13,7 @@ public class LexerMain {
 
             if (matcher.find()) {
                 Lexer l = new Lexer();
-                List<Token> ts = l.analyze(args[0]);
+                List<Token> ts = l.evaluate(args[0]);
 
                 for (Token token : ts) {
                     System.out.println(
