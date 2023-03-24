@@ -3,10 +3,19 @@ package analysis.lexer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Lexer {
+
+    private Set<String> operators;
+    
+    public Lexer () {
+        operators = new HashSet<>(Arrays.asList("AND", "OR", "NOT", "NOR", "NAND", "XOR", "XNOR"));
+    }
 
     public List<Token> analyze(String path) {
         List<Token> lexems = new ArrayList<>();
@@ -30,15 +39,31 @@ public class Lexer {
 
         int counter = 1;
         for (int i = 0; i < tokens.length; i++) {
-            //String token = tokens[i].toLowerCase();
-            System.out.println(tokens[i]);
+            if (this.operators.contains(tokens[i])) {
+                lexems.add(new Token(counter, "OPERATOR", tokens[i]));
+            } else if (tokens[i].compareTo("true") == 0  ||  tokens[i].compareTo("false") == 0) {
+                lexems.add(new Token(counter, "VAR_VALUE", tokens[i]));
+            } else if (tokens[i].compareTo("(") == 0  ||  tokens[i].compareTo(")") == 0) {
+                lexems.add(new Token(counter, "EXPRESSION_BORDER", tokens[i]));
+            } else if (tokens[i].compareTo("=") == 0) {
+                lexems.add(new Token(counter, "ASSIGNMENT", tokens[i]));
+            } else if (tokens[i].compareTo(";") == 0) {
+                lexems.add(new Token(counter, "ENDLINE", tokens[i]));
+            } else if (tokens[i].compareTo(tokens[i].toLowerCase()) == 0) {
+                // TODO: fix var_name flag detection
+                lexems.add(new Token(counter, "VAR_NAME", tokens[i]));
+            } else {
+                if (tokens[i].compareTo(" ") != 0) {
+                    System.out.println("Syntax error in token: " + tokens[i]);
+                }
+            }
 
             counter++;
         }
         return lexems;
     }
     
-    public String[] tokenize(String l) {
+    private String[] tokenize(String l) {
         StringBuffer sb = new StringBuffer();
 
         for (int i = 0; i < l.length() - 1; i++) {
