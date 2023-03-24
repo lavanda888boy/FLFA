@@ -71,7 +71,7 @@ public class Grammar {
 
         while (!isWord(word.toString())) {
             int nonterm = findNonTerminalChar(word);
-            int production = r.nextInt(0, P.get(Character.toString(word.charAt(nonterm))).size());
+            int production = r.nextInt(P.get(Character.toString(word.charAt(nonterm))).size());
             word.replace(nonterm, nonterm + 1, P.get(Character.toString(word.charAt(nonterm))).get(production));
         }
 
