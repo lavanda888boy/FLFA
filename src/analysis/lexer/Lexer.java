@@ -18,7 +18,7 @@ public class Lexer {
     }
 
     public List<Token> evaluate(String path) {
-        List<Token> lexems = new ArrayList<>();
+        List<Token> tokens = new ArrayList<>();
         String text = new String();
         
         try {
@@ -35,31 +35,31 @@ public class Lexer {
         }
         
         System.out.println(text);
-        String[] tokens = tokenize(text); 
+        String[] lexems = tokenize(text); 
 
         int counter = 1;
-        for (int i = 0; i < tokens.length; i++) {
-            if (this.operators.contains(tokens[i])) {
-                lexems.add(new Token(counter, "OPERATOR", tokens[i]));
-            } else if (tokens[i].compareTo("true") == 0  ||  tokens[i].compareTo("false") == 0) {
-                lexems.add(new Token(counter, "VAR_VALUE", tokens[i]));
-            } else if (tokens[i].compareTo("(") == 0  ||  tokens[i].compareTo(")") == 0) {
-                lexems.add(new Token(counter, "EXPRESSION_BORDER", tokens[i]));
-            } else if (tokens[i].compareTo("=") == 0) {
-                lexems.add(new Token(counter, "ASSIGNMENT", tokens[i]));
-            } else if (tokens[i].compareTo(";") == 0) {
-                lexems.add(new Token(counter, "ENDLINE", tokens[i]));
-            } else if (tokens[i].compareTo(tokens[i].toLowerCase()) == 0) {
-                lexems.add(new Token(counter, "VAR_NAME", tokens[i]));
+        for (int i = 0; i < lexems.length; i++) {
+            if (this.operators.contains(lexems[i])) {
+                tokens.add(new Token(counter, "OPERATOR", lexems[i]));
+            } else if (lexems[i].compareTo("true") == 0  ||  lexems[i].compareTo("false") == 0) {
+                tokens.add(new Token(counter, "VAR_VALUE", lexems[i]));
+            } else if (lexems[i].compareTo("(") == 0  ||  lexems[i].compareTo(")") == 0) {
+                tokens.add(new Token(counter, "EXPRESSION_BORDER", lexems[i]));
+            } else if (lexems[i].compareTo("=") == 0) {
+                tokens.add(new Token(counter, "ASSIGNMENT", lexems[i]));
+            } else if (lexems[i].compareTo(";") == 0) {
+                tokens.add(new Token(counter, "ENDLINE", lexems[i]));
+            } else if (lexems[i].compareTo(lexems[i].toLowerCase()) == 0) {
+                tokens.add(new Token(counter, "VAR_NAME", lexems[i]));
             } else {
-                if (tokens[i].compareTo(" ") != 0) {
-                    System.out.println("Syntax error in token: " + tokens[i]);
+                if (lexems[i].compareTo(" ") != 0) {
+                    System.out.println("Syntax error in token: " + lexems[i]);
                 }
             }
 
             counter++;
         }
-        return lexems;
+        return tokens;
     }
     
     private String[] tokenize(String l) {
