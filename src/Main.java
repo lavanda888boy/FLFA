@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,10 +9,12 @@ import java.util.Set;
 import automaton.FiniteAutomaton;
 import automaton.Transition;
 import grammar.Grammar;
+import grammar.simplification.NormalForm;
 
 public class Main {
     public static void main(String[] args) {
         
+        /*
         List<String> Q = new ArrayList<>();
         Q.add("q0");
         Q.add("q1");
@@ -53,40 +56,43 @@ public class Main {
         for (Transition tr : ftest.getDelta()) {
             System.out.println(tr.getInitialState() + " " + tr.getParameter() + " " + tr.getEndState());
         }
+        */
         
-        /*
+        
         List<String> V_n = new ArrayList<>();
-        V_n.add("S");
-        V_n.add("R");
-        V_n.add("L");
-        String V_t = "abcdef";
+        V_n.addAll(Arrays.asList("S", "A", "B", "C", "D"));
+        String V_t = "ab";
 
         Map<String, List<String>> productions = new HashMap<>();
 
         List<String> p1 = new ArrayList<>();
-        p1.add("aS");
-        p1.add("bS");
-        p1.add("cR");
-        p1.add("dL");
+        p1.addAll(Arrays.asList("aB", "bA"));
         productions.put("S", p1);
 
         List<String> p2 = new ArrayList<>();
-
-        p2.add("cR");
-        p2.add("e");
-        productions.put("R", p2);
+        p2.addAll(Arrays.asList("B", "b", "aD", "AS", "bAAB", "e"));
+        productions.put("A", p2);
 
         List<String> p3 = new ArrayList<>();
+        p3.addAll(Arrays.asList("b", "bS"));
+        productions.put("B", p3);
 
-        p3.add("fL");
-        p3.add("eL");
-        p3.add("d");
-        productions.put("L", p3);
+        List<String> p4 = new ArrayList<>();
+        p4.addAll(Arrays.asList("AB"));
+        productions.put("C", p4);
+
+        List<String> p5 = new ArrayList<>();
+        p5.addAll(Arrays.asList("BB"));
+        productions.put("D", p5);
+
 
         String S = "S";
 
         Grammar grammar = new Grammar(V_n, V_t, productions, S);
-        System.out.println(grammar.determineChomskyType());
-        */
+        System.out.println(grammar.getProductions().size());
+        
+        NormalForm nf = new NormalForm();
+        nf.eliminateInaccesibleSymbols(grammar.getProductions());
+        System.out.println(grammar.getProductions().size());
     }
 }

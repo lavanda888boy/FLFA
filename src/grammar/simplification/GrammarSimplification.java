@@ -1,8 +1,15 @@
 package grammar.simplification;
 
-import grammar.Grammar;
+import java.util.List;
+import java.util.Map;
 
 public interface GrammarSimplification {
     
-    void eliminateInaccesibleSymbols (Grammar g);
+    //void eliminateE_Productions (Map<String, List<String>> productions);
+
+    //void eliminateUnitProductions (Map<String, List<String>> productions);
+
+    //void eliminateUnproductiveSymbols (Map<String, List<String>> productions);
+
+    void eliminateInaccesibleSymbols (Map<String, List<String>> productions);
 }
