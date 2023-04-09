@@ -63,6 +63,18 @@ public class Grammar {
     }
 
 
+    public void showProductions () {
+        for (String symbol : this.P.keySet()) {
+            System.out.print(symbol + ": ");
+            for (String production : this.P.get(symbol)) {
+                System.out.print(production + " | ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+
     public String generateString () {
         StringBuffer word = new StringBuffer();
         word.append(S);

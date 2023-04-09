@@ -89,10 +89,11 @@ public class Main {
         String S = "S";
 
         Grammar grammar = new Grammar(V_n, V_t, productions, S);
-        System.out.println(grammar.getProductions().size());
+        grammar.showProductions();
+        System.out.println();
         
         NormalForm nf = new NormalForm();
         nf.eliminateInaccesibleSymbols(grammar.getProductions());
-        System.out.println(grammar.getProductions().size());
+        grammar.showProductions();
     }
 }

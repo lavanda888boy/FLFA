@@ -9,7 +9,7 @@ public interface GrammarSimplification {
 
     //void eliminateUnitProductions (Map<String, List<String>> productions);
 
-    //void eliminateUnproductiveSymbols (Map<String, List<String>> productions);
+    //void eliminateNonProductiveSymbols (Map<String, List<String>> productions);
 
     void eliminateInaccesibleSymbols (Map<String, List<String>> productions);
 }
