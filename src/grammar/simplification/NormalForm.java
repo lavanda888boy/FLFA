@@ -1,18 +1,23 @@
 package grammar.simplification;
 
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import grammar.Grammar;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+
 
 public class NormalForm implements GrammarSimplification {
 
+
     @Override
     public void eliminateE_Productions (Map<String, List<String>> productions) {
-        Set<String> eSymbols = new HashSet<>();
+        Queue<String> eSymbols = new LinkedList<>();
 
         for (String symbol : productions.keySet()) {
             for (String production : productions.get(symbol)) {
@@ -24,15 +29,55 @@ public class NormalForm implements GrammarSimplification {
             }
         }
 
-        for (String symbol : eSymbols) {
-            for (List<String> production : productions.values()) {
-                for (String result : production) {
-                    if (result.contains(symbol)) {
+        while (!eSymbols.isEmpty()) {
+            String eSymbol = eSymbols.poll();
+            long counter;
+
+            for (List<String> prods : productions.values()) {
+                List<String> prodsCopy = new ArrayList<>(prods);
+
+                for (String production : prods) {
+                    if (production.contains(eSymbol)) {
+                        prodsCopy.add(production.replace(eSymbol, ""));
+                        counter = production.chars().filter(ch -> ch == eSymbol.charAt(0)).count();
                         
+                        if (counter > 1) {
+                            for (int i = 1; i < Math.pow(2, counter) - 1; i++) {
+                                String combination = Integer.toBinaryString(i);
+                                int diff = (int) counter - combination.length();
+    
+                                if (diff != 0) {
+                                    for (int j = 0; j < diff; j++) {
+                                        combination = "0" + combination;
+                                    }
+                                }
+    
+                                StringBuilder sb = new StringBuilder();
+                                int index = 0;
+                                int k = 0;    
+                                
+                                while (k < production.length()) {
+                                    if (production.charAt(k) == eSymbol.charAt(0)  &&  combination.charAt(index) == '1') {
+                                        sb.append(production.charAt(k));
+                                        index++;
+                                    } else if (production.charAt(k) != eSymbol.charAt(0)) {
+                                        sb.append(production.charAt(k));
+                                    }
+                                    k++;
+                                }
+
+                                if (!prodsCopy.contains(sb.toString())) {
+                                    prodsCopy.add(sb.toString());
+                                }
+                            }
+                        }
                     }
                 }
+
+                prods.clear();
+                prods.addAll(prodsCopy);
             }
-        }        
+        }
     }
 
 
