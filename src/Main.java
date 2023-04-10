@@ -94,6 +94,8 @@ public class Main {
         
         NormalForm nf = new NormalForm();
         nf.eliminateInaccesibleSymbols(grammar.getProductions());
+        //nf.eliminateE_Productions(grammar.getProductions());
+        nf.eliminateNonProductiveSymbols(grammar);
         grammar.showProductions();
     }
 }

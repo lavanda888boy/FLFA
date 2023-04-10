@@ -58,6 +58,10 @@ public class Grammar {
         this.P = productions;
     }
 
+    public List<String> getNonTerminals () {
+        return this.V_n;
+    }
+
     public Map<String, List<String>> getProductions () {
         return this.P;
     }
