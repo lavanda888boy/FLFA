@@ -9,9 +9,9 @@ public interface GrammarSimplification {
     
     void eliminateE_Productions (Map<String, List<String>> productions);
 
-    //void eliminateUnitProductions (Map<String, List<String>> productions);
+    void eliminateUnitProductions (Map<String, List<String>> productions);
 
     void eliminateNonProductiveSymbols (Grammar g);
 
-    void eliminateInaccesibleSymbols (Map<String, List<String>> productions);
+    void eliminateInaccesibleSymbols (Grammar g);
 }

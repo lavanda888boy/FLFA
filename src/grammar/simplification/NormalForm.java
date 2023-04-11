@@ -18,10 +18,11 @@ public class NormalForm implements GrammarSimplification {
     @Override
     public void eliminateE_Productions (Map<String, List<String>> productions) {
         Queue<String> eSymbols = new LinkedList<>();
+        Set<String> visitedSymbols = new HashSet<>();
 
         for (String symbol : productions.keySet()) {
             for (String production : productions.get(symbol)) {
-                if (production.compareTo("e") == 0) {
+                if (production.compareTo("e") == 0  ||  containsOnlyNullables(eSymbols, productions, symbol)) {
                     eSymbols.add(symbol);
                     productions.get(symbol).remove(production);
                     break;
@@ -31,6 +32,7 @@ public class NormalForm implements GrammarSimplification {
 
         while (!eSymbols.isEmpty()) {
             String eSymbol = eSymbols.poll();
+            visitedSymbols.add(eSymbol);
             long counter;
 
             for (List<String> prods : productions.values()) {
@@ -38,7 +40,14 @@ public class NormalForm implements GrammarSimplification {
 
                 for (String production : prods) {
                     if (production.contains(eSymbol)) {
-                        prodsCopy.add(production.replace(eSymbol, ""));
+                        String boofer = production.replace(eSymbol, "");
+                        
+                        if (boofer.compareTo("") == 0) {
+                            prodsCopy.add("e");
+                        } else {
+                            prodsCopy.add(boofer);
+                        }
+                        
                         counter = production.chars().filter(ch -> ch == eSymbol.charAt(0)).count();
                         
                         if (counter > 1) {
@@ -77,7 +86,43 @@ public class NormalForm implements GrammarSimplification {
                 prods.clear();
                 prods.addAll(prodsCopy);
             }
+
+            for (String symbol : productions.keySet()) {
+                for (String production : productions.get(symbol)) {
+                    if ((production.compareTo("e") == 0 || containsOnlyNullables(eSymbols, productions, symbol))
+                        && !visitedSymbols.contains(symbol)) {
+                        eSymbols.add(symbol);
+                        productions.get(symbol).remove(production);
+                        break;
+                    }
+                }
+            }
         }
+    }
+
+
+    private boolean containsOnlyNullables (Queue<String> nullables, Map<String, List<String>> productions, String symbol) {
+        for (String production : productions.get(symbol)) {
+            int count = 0;
+
+            for (int i = 0; i < production.length(); i++) {
+                if (!nullables.contains(Character.toString(production.charAt(i)))) {
+                    count++;
+                }
+            }
+
+            if (count == 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    @Override
+    public void eliminateUnitProductions (Map<String, List<String>> productions) {
+        //TODO: ask about S productions;
     }
 
 
@@ -131,7 +176,8 @@ public class NormalForm implements GrammarSimplification {
 
     
     @Override
-    public void eliminateInaccesibleSymbols (Map<String, List<String>> productions) {
+    public void eliminateInaccesibleSymbols (Grammar g) {
+        Map<String, List<String>> productions = g.getProductions();
         Set<String> inaccesibleSymbols = new HashSet<>();
         byte checker;
 
@@ -154,6 +200,7 @@ public class NormalForm implements GrammarSimplification {
 
         for (String inSymbol : inaccesibleSymbols) {
             productions.remove(inSymbol);
+            g.getNonTerminals().removeIf(nonTerm -> nonTerm.compareTo(inSymbol) == 0);
         }
     }
 }
