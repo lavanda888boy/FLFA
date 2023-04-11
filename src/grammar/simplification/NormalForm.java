@@ -3,6 +3,8 @@ package grammar.simplification;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import grammar.Grammar;
 
@@ -20,15 +22,7 @@ public class NormalForm implements GrammarSimplification {
         Queue<String> eSymbols = new LinkedList<>();
         Set<String> visitedSymbols = new HashSet<>();
 
-        for (String symbol : productions.keySet()) {
-            for (String production : productions.get(symbol)) {
-                if (production.compareTo("e") == 0  ||  containsOnlyNullables(eSymbols, productions, symbol)) {
-                    eSymbols.add(symbol);
-                    productions.get(symbol).remove(production);
-                    break;
-                }
-            }
-        }
+        analyzeNullables(eSymbols, productions, visitedSymbols);
 
         while (!eSymbols.isEmpty()) {
             String eSymbol = eSymbols.poll();
@@ -47,7 +41,7 @@ public class NormalForm implements GrammarSimplification {
                         } else {
                             prodsCopy.add(boofer);
                         }
-                        
+
                         counter = production.chars().filter(ch -> ch == eSymbol.charAt(0)).count();
                         
                         if (counter > 1) {
@@ -66,8 +60,11 @@ public class NormalForm implements GrammarSimplification {
                                 int k = 0;    
                                 
                                 while (k < production.length()) {
-                                    if (production.charAt(k) == eSymbol.charAt(0)  &&  combination.charAt(index) == '1') {
-                                        sb.append(production.charAt(k));
+                                    if (production.charAt(k) == eSymbol.charAt(0)) {
+                                        if (combination.charAt(index) == '1') {
+                                            sb.append(production.charAt(k));
+                                        }
+
                                         index++;
                                     } else if (production.charAt(k) != eSymbol.charAt(0)) {
                                         sb.append(production.charAt(k));
@@ -87,14 +84,19 @@ public class NormalForm implements GrammarSimplification {
                 prods.addAll(prodsCopy);
             }
 
-            for (String symbol : productions.keySet()) {
-                for (String production : productions.get(symbol)) {
-                    if ((production.compareTo("e") == 0 || containsOnlyNullables(eSymbols, productions, symbol))
-                        && !visitedSymbols.contains(symbol)) {
-                        eSymbols.add(symbol);
-                        productions.get(symbol).remove(production);
-                        break;
-                    }
+            analyzeNullables(eSymbols, productions, visitedSymbols);
+        }
+    }
+
+
+    private void analyzeNullables (Queue<String> nullables, Map<String, List<String>> productions, Set<String> visited) {
+        for (String symbol : productions.keySet()) {
+            for (String production : productions.get(symbol)) {
+                if ((production.compareTo("e") == 0 || containsOnlyNullables(nullables, productions, symbol))
+                    && !visited.contains(symbol)) {
+                    nullables.add(symbol);
+                    productions.get(symbol).remove(production);
+                    break;
                 }
             }
         }
@@ -123,6 +125,26 @@ public class NormalForm implements GrammarSimplification {
     @Override
     public void eliminateUnitProductions (Map<String, List<String>> productions) {
         //TODO: ask about S productions;
+        int unitMarker = 1;
+
+        while (unitMarker != 0) {
+            unitMarker = 0;
+
+            for (String symbol : productions.keySet()) {
+                Set<String> lineUnits = productions.get(symbol)
+                                                    .stream()
+                                                    .filter(production -> production.length() == 1 && Character.isUpperCase(production.charAt(0)))
+                                                    .collect(Collectors.toSet());
+                if (!lineUnits.isEmpty()) {
+                    productions.get(symbol).removeIf(production -> production.length() == 1 && Character.isUpperCase(production.charAt(0)));
+                    unitMarker++;
+                    
+                    for (String unit : lineUnits) {
+                        productions.get(symbol).addAll(productions.get(unit));
+                    }
+                }
+            }
+        }
     }
 
 

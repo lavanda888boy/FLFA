@@ -89,12 +89,41 @@ public class Main {
         String S = "S";
 
         Grammar grammar = new Grammar(V_n, V_t, productions, S);
+        
+        /* 
+        List<String> V_n = new ArrayList<>();
+        V_n.addAll(Arrays.asList("S", "T", "R"));
+        String V_t = "01";
+
+        Map<String, List<String>> productions = new HashMap<>();
+
+        List<String> p1 = new ArrayList<>();
+        p1.addAll(Arrays.asList("0S1", "1S0S", "T"));
+        productions.put("S", p1);
+
+        List<String> p2 = new ArrayList<>();
+        p2.addAll(Arrays.asList("S", "R", "e"));
+        productions.put("T", p2);
+
+        List<String> p3 = new ArrayList<>();
+        p3.addAll(Arrays.asList("0SR"));
+        productions.put("R", p3);
+
+        String S = "S";
+
+        Grammar grammar = new Grammar(V_n, V_t, productions, S);
+        */
+
         grammar.showProductions();
         System.out.println();
         
         NormalForm nf = new NormalForm();
         //nf.eliminateInaccesibleSymbols(grammar.getProductions());
         nf.eliminateE_Productions(grammar.getProductions());
+        grammar.showProductions();
+        System.out.println();
+
+        nf.eliminateUnitProductions(grammar.getProductions());
         //nf.eliminateNonProductiveSymbols(grammar);
         grammar.showProductions();
     }
