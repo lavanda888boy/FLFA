@@ -85,6 +85,10 @@ public class NormalForm implements GrammarSimplification {
             }
 
             analyzeNullables(eSymbols, productions, visitedSymbols);
+
+            for (String symbol : visitedSymbols) {
+                productions.get(symbol).removeIf(production -> production.compareTo("e") == 0);
+            }
         }
     }
 
@@ -124,7 +128,6 @@ public class NormalForm implements GrammarSimplification {
 
     @Override
     public void eliminateUnitProductions (Map<String, List<String>> productions) {
-        //TODO: ask about S productions;
         int unitMarker = 1;
 
         while (unitMarker != 0) {

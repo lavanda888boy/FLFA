@@ -139,6 +139,8 @@ public class Grammar {
         }
     }
 
+    //TODO: make method for removing S from the right side of any production
+
 
     private boolean checkThirdType () {
         List<String> productions;
