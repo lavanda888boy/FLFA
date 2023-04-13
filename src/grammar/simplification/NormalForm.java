@@ -3,7 +3,6 @@ package grammar.simplification;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import grammar.Grammar;
@@ -15,6 +14,15 @@ import java.util.List;
 
 
 public class NormalForm implements GrammarSimplification {
+
+    public void normalizeChomsky (Grammar g) {
+        g.substituteStartingSymbol();
+
+        this.eliminateE_Productions(g.getProductions());
+        this.eliminateUnitProductions(g.getProductions());
+        this.eliminateNonProductiveSymbols(g);
+        this.eliminateInaccesibleSymbols(g);
+    }
 
 
     @Override
@@ -143,7 +151,11 @@ public class NormalForm implements GrammarSimplification {
                     unitMarker++;
                     
                     for (String unit : lineUnits) {
-                        productions.get(symbol).addAll(productions.get(unit));
+                        for (String prod : productions.get(unit)) {
+                            if (!productions.get(symbol).contains(prod)) {
+                                productions.get(symbol).add(prod);
+                            }
+                        }
                     }
                 }
             }

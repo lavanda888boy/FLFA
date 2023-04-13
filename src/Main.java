@@ -58,7 +58,7 @@ public class Main {
         }
         */
         
-        /*
+        
         List<String> V_n = new ArrayList<>();
         V_n.addAll(Arrays.asList("S", "A", "B", "C", "D"));
         String V_t = "ab";
@@ -89,8 +89,8 @@ public class Main {
         String S = "S";
 
         Grammar grammar = new Grammar(V_n, V_t, productions, S);
-        */
         
+        /* 
         List<String> V_n = new ArrayList<>();
         V_n.addAll(Arrays.asList("S", "T", "R"));
         String V_t = "01";
@@ -112,19 +112,13 @@ public class Main {
         String S = "S";
 
         Grammar grammar = new Grammar(V_n, V_t, productions, S);
-        
+        */
 
         grammar.showProductions();
         System.out.println();
         
         NormalForm nf = new NormalForm();
-        //nf.eliminateInaccesibleSymbols(grammar.getProductions());
-        nf.eliminateE_Productions(grammar.getProductions());
-        grammar.showProductions();
-        System.out.println();
-
-        //nf.eliminateUnitProductions(grammar.getProductions());
-        //nf.eliminateNonProductiveSymbols(grammar);
+        nf.normalizeChomsky(grammar);
         grammar.showProductions();
     }
 }

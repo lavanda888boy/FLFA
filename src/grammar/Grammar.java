@@ -66,6 +66,10 @@ public class Grammar {
         return this.P;
     }
 
+    public void setStartingSymbol (String symbol) {
+        this.S = symbol;
+    }
+
 
     public void showProductions () {
         for (String symbol : this.P.keySet()) {
@@ -76,6 +80,28 @@ public class Grammar {
             System.out.println();
         }
         System.out.println();
+    }
+    
+
+    public void substituteStartingSymbol () {
+        byte marker = 0;
+
+        for (List<String> prods : this.P.values()) {
+            for (String production : prods) {
+                if (production.contains("S")) {
+                    this.V_n.add("S1");
+                    this.setStartingSymbol("S1");
+                    marker++;
+                    break;
+                }
+            }
+
+            if (marker > 0) {
+                this.P.put("S1", new ArrayList<>());
+                this.P.get("S1").add("S");
+                return;
+            }
+        }
     }
 
 
@@ -138,8 +164,6 @@ public class Grammar {
             return 0;
         }
     }
-
-    //TODO: make method for removing S from the right side of any production
 
 
     private boolean checkThirdType () {
