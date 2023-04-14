@@ -1,6 +1,9 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,30 +59,48 @@ public class NormalFormTest {
 
     @Test
     public void epsilonEliminationTest () {
-        
+        nf.eliminateE_Productions(grammar.getProductions());
+
+        assertEquals("The number of productions for A does not match!", 8, grammar.getProductions().get("A").size());
+        assertFalse("E-production for A was not removed", grammar.getProductions().get("A").contains("e"));
+        assertEquals("The number of productions for S does not match!", 3, grammar.getProductions().get("S").size());
     }
 
 
     @Test
     public void unitProductionsTest () {
-        
+        nf.eliminateUnitProductions(grammar.getProductions());
+
+        assertEquals("The number of productions for A does not match!", 6, grammar.getProductions().get("A").size());
+        assertFalse("Unit production for A was not removed", grammar.getProductions().get("A").contains("B"));
     }
 
 
     @Test
     public void nonProductiveSymbolsTest () {
-        
+        nf.eliminateNonProductiveSymbols(grammar);
+
+        assertEquals("The number of nonterminals does not match!", 3, grammar.getProductions().keySet().size());
+        assertNull("Nonproductive symbol D was not removed!", grammar.getProductions().get("D"));
+        assertNull("Nonproductive symbol C was not removed!", grammar.getProductions().get("C"));
     }
 
 
     @Test
     public void inaccesibleSymbolsTest () {
-        
+        nf.eliminateInaccesibleSymbols(grammar);
+
+        assertEquals("The number of nonterminals does not match!", 4, grammar.getProductions().keySet().size());
+        assertNull("Inaccesible symbol C was not removed!", grammar.getProductions().get("C"));
     }
 
 
     @Test
     public void chomskySimplificationTest () {
-        
+        nf.normalizeChomsky(grammar);
+
+        assertEquals("The number of nonterminals does not match!", 8, grammar.getProductions().keySet().size());
+        assertEquals("Wrong production for nonterminal G", "a", grammar.getProductions().get("G").get(0));
+        assertEquals("Wrong production for nonterminal E", "AB", grammar.getProductions().get("E").get(0));
     }
 }

@@ -83,7 +83,7 @@ public class Grammar {
             }
             System.out.println();
         }
-        System.out.println();
+        System.out.println("\n\n");
     }
     
 

@@ -118,7 +118,8 @@ public class Main {
         System.out.println();
         
         NormalForm nf = new NormalForm();
-        nf.normalizeChomsky(grammar);
+        //nf.normalizeChomsky(grammar);
+        nf.eliminateUnitProductions(productions);
 
         grammar.showProductions();
     }
