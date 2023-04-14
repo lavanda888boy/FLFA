@@ -119,6 +119,7 @@ public class Main {
         
         NormalForm nf = new NormalForm();
         nf.normalizeChomsky(grammar);
+
         grammar.showProductions();
     }
 }

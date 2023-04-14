@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import grammar.Grammar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +24,82 @@ public class NormalForm implements GrammarSimplification {
         this.eliminateUnitProductions(g.getProductions());
         this.eliminateNonProductiveSymbols(g);
         this.eliminateInaccesibleSymbols(g);
+
+        Map<String, List<String>> updatedProductions = new HashMap<>();
+        Map<String, List<String>> newNonTerminals = new HashMap<>();
+
+        for (String symbol : g.getProductions().keySet()) {
+            List<String> updatedList = new ArrayList<>();
+
+            for (String result : g.getProductions().get(symbol)) {
+                int current;
+                
+                while (!result.matches("[a-z]|[A-Z][A-Z]")) {
+                    current = 0;
+                    String token = "";
+                    
+                    while (current + 1 < result.length()) {
+                        token = result.substring(current, current + 2);
+
+                        if (token.matches("[a-z][A-Z]")) {
+                            String substitution = findExistingNonTerm(newNonTerminals, token.substring(0, 1));
+                            
+                            if (substitution == null) {
+                                substitution = getNewNonTerminal(g.getNonTerminals());
+                                newNonTerminals.put(substitution, new ArrayList<>(Arrays.asList(token.substring(0, 1))));
+                            }
+
+                            result = result.replace(token.substring(0, 1), substitution);
+                        } else {
+                            String substitution = findExistingNonTerm(newNonTerminals, token);
+                            
+                            if (substitution == null) {
+                                substitution = getNewNonTerminal(g.getNonTerminals());
+                                newNonTerminals.put(substitution, new ArrayList<>(Arrays.asList(token)));
+                            }
+
+                            result = result.replace(token, substitution);
+                        }
+
+                        current += 2;
+                    }
+                }
+                updatedList.add(result);
+            }
+            updatedProductions.put(symbol, updatedList);
+        }
+        g.setProductions(updatedProductions);
+
+        for (String s : newNonTerminals.keySet()) {
+            g.getProductions().put(s, newNonTerminals.get(s));
+        }
+    }
+
+
+    private String findExistingNonTerm (Map<String, List<String>> newNonTerms, String prod) {
+        for (String symbol : newNonTerms.keySet()) {
+            if (newNonTerms.get(symbol).get(0).compareTo(prod) == 0) {
+                return symbol;
+            }
+        }
+
+        return null;
+    }
+
+
+    private String getNewNonTerminal (List<String> nonTerms) {
+        char init = 'A';
+
+        while (init <= 'Z') {
+            if (!nonTerms.contains(Character.toString(init))) {
+                nonTerms.add(Character.toString(init));
+                return Character.toString(init);
+            } else {
+                init++;
+            }
+        }
+
+        return "*";
     }
 
 
@@ -230,7 +308,7 @@ public class NormalForm implements GrammarSimplification {
                 }
             }
             
-            if (checker == 0) {
+            if (checker == 0  &&  !symbol.contains("S")) {
                 inaccesibleSymbols.add(symbol);
             }
         }

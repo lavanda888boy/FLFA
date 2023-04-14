@@ -66,6 +66,10 @@ public class Grammar {
         return this.P;
     }
 
+    public void setProductions (Map<String, List<String>> productions) {
+        this.P = productions;
+    }
+
     public void setStartingSymbol (String symbol) {
         this.S = symbol;
     }
