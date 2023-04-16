@@ -46,7 +46,7 @@ as a useless variable. This definition combines the notions of `non-productive` 
 
 Before discussing the laboratory implementation itself let me present the variant I was working on: `Vn` = {S, A, B, C, D}, `Vt` = {a, b} and `P` = {S -> aB | bA, A -> B | b | aD | AS | bAAB | e, B -> b | bS, C -> AB, D -> BB}
 
-As it was already mentioned in the `Theory` section, in order to perform CFG simplisifcation and transform it into the CNF we have to go throgh the four symbol elimination processes. Fo this purpose I created an interface `GrammarSimplification` inside the `grammar/simplification` folder which includes the four elimination methods respectively.
+As it was already mentioned in the `Theory` section, in order to perform CFG simplification and transform it into the CNF we have to go through the four symbol elimination processes. Fo this purpose I created an interface `GrammarSimplification` inside the `grammar/simplification` folder which includes the four elimination methods respectively.
 
 ```
 public interface GrammarSimplification {
@@ -63,7 +63,7 @@ public interface GrammarSimplification {
 
 This interface is implemented by the `NormalForm` class which also includes general method for Chomsky normalization and several private helper methods. Let me start discussing the most important ones. 
 
-1. E-elimination method works mainly on defining nullable symbols and eliminating them from the corresponding producitons. If a symbol has an e-production or derives into a nullable symbol then the algorithm finds all the productions which include such a symbol. Then usinng binary numbers it computes all possible combinations of that symbol inside of the found production and adds them into the production list. For instance, in my variant I have `A -> e` and `A -> bAAB` therefore new productions for the symbol A will be bAB and bB. The algorithm stops when there are no nullables remainning in the grammar. There is also a special set containing visited symbols in order to avoid loops in epsilon elimination.
+1. E-elimination method works mainly on defining nullable symbols and eliminating them from the corresponding productions. If a symbol has an e-production or derives into a nullable symbol then the algorithm finds all the productions which include such a symbol. Then by using binary numbers it computes all possible combinations of that symbol inside of the found production and adds them into the production list. For instance, in my variant I have `A -> e` and `A -> bAAB` therefore new productions for the symbol A will be `bAB` and `bB`. The algorithm stops when there are no nullables remaining in the grammar. There is also a special set containing visited symbols in order to avoid loops in epsilon elimination.
 
 ```
 @Override
@@ -80,7 +80,7 @@ public void eliminateE_Productions (Map<String, List<String>> productions) {
         ...
 ```
 
-The method `analyzeNullables` actually performs the operation of finding nullables at each iteration.
+The method `analyzeNullables()` actually performs the operation of finding nullables at each iteration.
 
 ```
 private void analyzeNullables (Queue<String> nullables, Map<String, List<String>> productions, Set<String> visited) {
@@ -97,7 +97,7 @@ private void analyzeNullables (Queue<String> nullables, Map<String, List<String>
 }
 ```
 
-And the following piece of code describes how the combination of terminals inside of a production are being created. The binary number of length equal to the number of nullable in the production represents each distinct combination.
+And the following piece of code describes how the combination of terminals inside of a production are being created. The binary number of length equal to the number of a nullable in the production represents each distinct combination.
 
 ```
 ...
@@ -133,7 +133,7 @@ if (counter > 1) {
         ...
 ```
 
-2. The process of eliminating unit productions works similarly in a loop. It continues iterating while thre are still unit productions remaining in grammar. When they are found, they are immediately removed and replaced with productions which contained the non-terminal from the right side of the production found.
+2. The process of eliminating unit productions works similarly in a loop. It continues iterating while there are still unit productions remaining in grammar. When they are found, they are immediately removed and replaced with productions which contained the non-terminal from the right side of the production found.
 
 ```
 @Override
@@ -226,12 +226,146 @@ public void eliminateInaccesibleSymbols (Grammar g) {
 
     for (String inSymbol : inaccesibleSymbols) {
         productions.remove(inSymbol);
-        g.getNonTerminals().removeIf(nonTerm -> nonTerm.compareTo(inSymbol) == 0);
+         g.getNonTerminals().removeIf(nonTerm -> nonTerm.compareTo(inSymbol) == 0);
     }
 }
 ```
 
+Finally, it's time to discuss Chomsky normalization itself. Having the productions prepared the algorithm iterates through them and finds the ones which does not correspond to the rule. It then splits the production into pairs of consecutive symbols and replaces either both of them (in case they are non-terminal) or one of them (terminal) with a new non-terminal. The process terminates when the production becomes normalized. The thing is that in my implementation the new terminals are taken from the english alphabet and are sufficient but for larger grammars it will be necessary to create new non-terminals by adding a certain index to them and thus redesigning the production implementation itself.
+
+```
+public void normalizeChomsky (Grammar g) {
+  g.substituteStartingSymbol();
+
+  this.eliminateE_Productions(g.getProductions());
+  this.eliminateUnitProductions(g.getProductions());
+  this.eliminateNonProductiveSymbols(g);
+  this.eliminateInaccesibleSymbols(g);
+  ...
+```
+The beginning of the method is presented above and under below sentence the implementation of the while-loop which performs normalization is presented.
+
+```
+  while (!result.matches("[a-z]|[A-Z][A-Z]")) {
+    current = 0;
+    String token = "";
+
+    while (current + 1 < result.length()) {
+        token = result.substring(current, current + 2);
+
+        if (token.matches("[a-z][A-Z]")) {
+            String substitution = findExistingNonTerm(newNonTerminals, token.substring(0, 1));
+
+            if (substitution == null) {
+                substitution = getNewNonTerminal(g.getNonTerminals());
+                newNonTerminals.put(substitution, new ArrayList<>(Arrays.asList(token.substring(0, 1))));
+            }
+
+            result = result.replace(token.substring(0, 1), substitution);
+        } else {
+            String substitution = findExistingNonTerm(newNonTerminals, token);
+
+            if (substitution == null) {
+                substitution = getNewNonTerminal(g.getNonTerminals());
+                newNonTerminals.put(substitution, new ArrayList<>(Arrays.asList(token)));
+            }
+
+            result = result.replace(token, substitution);
+        }
+
+        current += 2;
+    }
+}
+```
+
+It is also important to mention that I have written several unit tests for the most essential methods from the `NormalForm` class. They are located in the class `NormalFormTest` inside the `src/test` folder. The framework I have used is `junit-4`.
+
+```
+public class NormalFormTest {
+
+    private Grammar grammar;
+    private NormalForm nf;
+    
+    @Before
+    public void setup () {
+        List<String> V_n = new ArrayList<>();
+        V_n.addAll(Arrays.asList("S", "A", "B", "C", "D"));
+        String V_t = "ab";
+
+        Map<String, List<String>> productions = new HashMap<>();
+        ...
+        
+    
+    @Test
+    public void epsilonEliminationTest () {
+        nf.eliminateE_Productions(grammar.getProductions());
+
+        assertEquals("The number of productions for A does not match!", 8, grammar.getProductions().get("A").size());
+        assertFalse("E-production for A was not removed", grammar.getProductions().get("A").contains("e"));
+        assertEquals("The number of productions for S does not match!", 3, grammar.getProductions().get("S").size());
+    }
+    ...
+```
+
+
 ## Conclusions / Screenshots / Results
+
+Below I will present the set of production rules for the input grammar before applying Chomsky normalization to it and then it states after each step of normalization. In total there will be 6 states of the grammar shown.
+
+```
+A: B | b | aD | AS | bAAB | e | 
+B: b | bS | 
+S: aB | bA | 
+C: AB | 
+D: BB | 
+
+
+
+
+A: B | b | aD | AS | bAAB | S | bB | bAB | 
+B: b | bS | 
+S: aB | bA | b | 
+C: AB | B | 
+D: BB | 
+S1: S | 
+
+
+
+A: b | aD | AS | bAAB | bB | bAB | bS | aB | bA | 
+B: b | bS | 
+S: aB | bA | b | 
+C: AB | b | bS | 
+D: BB | 
+S1: aB | bA | b | 
+
+
+
+A: b | AS | bAAB | bB | bAB | bS | aB | bA | 
+B: b | bS | 
+S: aB | bA | b | 
+C: AB | b | bS | 
+S1: aB | bA | b | 
+
+
+
+A: b | AS | bAAB | bB | bAB | bS | aB | bA | 
+B: b | bS | 
+S: aB | bA | b | 
+S1: aB | bA | b | 
+
+
+
+A: b | AS | FE | CB | FB | CS | GB | CA | 
+B: b | CS | 
+S: GB | CA | b | 
+C: b | 
+E: AB | 
+F: CA | 
+G: a | 
+S1: GB | CA | b | 
+```
+
+In conclusion I would say that this laboratory work was pretty challenging and made me work on it for a long period of time. The most complicated methods for generalization were related to e-elimination and renaming elimination. It was difficult to make a universal algorithm for these processes. I also faced the problem with a special Java exception called `java.util.ConcurrentModificationException` which occured when I was trying to change a collection data type object while iterating over it. That is why I had to make copies of objects and also make use of streams and methods with lambda-functions as parameters. To sum up, the laboratory work was very useful to better learn the concept of Chomsky Normal Form and its further applications.
 
 
 ## References
