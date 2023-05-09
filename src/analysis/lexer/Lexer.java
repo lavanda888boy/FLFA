@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import analysis.lexer.keywords.Category;
 import analysis.lexer.keywords.Operator;
@@ -33,6 +35,9 @@ public class Lexer {
 
         int counter = 1;
         for (int i = 0; i < lexems.length; i++) {
+            Pattern pattern = Pattern.compile("[a-z]+");
+            Matcher matcher = pattern.matcher(lexems[i]);
+
             if (Operator.contains(lexems[i])) {
                 tokens.add(new Token(counter, Category.OPERATOR.toString(), lexems[i]));
             } else if (lexems[i].compareTo("true") == 0  ||  lexems[i].compareTo("false") == 0) {
@@ -43,7 +48,7 @@ public class Lexer {
                 tokens.add(new Token(counter, Category.ASSIGNMENT.toString(), lexems[i]));
             } else if (lexems[i].compareTo(";") == 0) {
                 tokens.add(new Token(counter, Category.ENDLINE.toString(), lexems[i]));
-            } else if (lexems[i].compareTo(lexems[i].toLowerCase()) == 0) {
+            } else if (matcher.find()) {
                 tokens.add(new Token(counter, Category.VAR_NAME.toString(), lexems[i]));
             } else {
                 if (lexems[i].compareTo(" ") != 0) {
