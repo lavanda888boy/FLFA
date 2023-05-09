@@ -3,19 +3,13 @@ package analysis.lexer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
+
+import analysis.lexer.keywords.Category;
+import analysis.lexer.keywords.Operator;
 
 public class Lexer {
-
-    private Set<String> operators;
-    
-    public Lexer () {
-        operators = new HashSet<>(Arrays.asList("AND", "OR", "NOT", "NOR", "NAND", "XOR", "XNOR"));
-    }
 
     public List<Token> evaluate(String path) {
         List<Token> tokens = new ArrayList<>();
@@ -39,18 +33,18 @@ public class Lexer {
 
         int counter = 1;
         for (int i = 0; i < lexems.length; i++) {
-            if (this.operators.contains(lexems[i])) {
-                tokens.add(new Token(counter, "OPERATOR", lexems[i]));
+            if (Operator.contains(lexems[i])) {
+                tokens.add(new Token(counter, Category.OPERATOR.toString(), lexems[i]));
             } else if (lexems[i].compareTo("true") == 0  ||  lexems[i].compareTo("false") == 0) {
-                tokens.add(new Token(counter, "VAR_VALUE", lexems[i]));
+                tokens.add(new Token(counter, Category.VAR_VALUE.toString(), lexems[i]));
             } else if (lexems[i].compareTo("(") == 0  ||  lexems[i].compareTo(")") == 0) {
-                tokens.add(new Token(counter, "EXPRESSION_BORDER", lexems[i]));
+                tokens.add(new Token(counter, Category.EXPRESSION_BORDER.toString(), lexems[i]));
             } else if (lexems[i].compareTo("=") == 0) {
-                tokens.add(new Token(counter, "ASSIGNMENT", lexems[i]));
+                tokens.add(new Token(counter, Category.ASSIGNMENT.toString(), lexems[i]));
             } else if (lexems[i].compareTo(";") == 0) {
-                tokens.add(new Token(counter, "ENDLINE", lexems[i]));
+                tokens.add(new Token(counter, Category.ENDLINE.toString(), lexems[i]));
             } else if (lexems[i].compareTo(lexems[i].toLowerCase()) == 0) {
-                tokens.add(new Token(counter, "VAR_NAME", lexems[i]));
+                tokens.add(new Token(counter, Category.VAR_NAME.toString(), lexems[i]));
             } else {
                 if (lexems[i].compareTo(" ") != 0) {
                     System.out.println("Syntax error in token: " + lexems[i]);
