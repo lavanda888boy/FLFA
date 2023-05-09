@@ -30,7 +30,6 @@ public class Lexer {
             e.printStackTrace();
         }
         
-        System.out.println(text);
         String[] lexems = tokenize(text); 
 
         int counter = 1;
@@ -84,7 +83,6 @@ public class Lexer {
             }
         }
         sb.append(l.charAt(l.length() - 1));
-        System.out.println(sb.toString());
 
         return sb.toString().split(" ");
     }
