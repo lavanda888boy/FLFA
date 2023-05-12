@@ -74,4 +74,33 @@ public class Parser {
             }
         }
     }
+
+    public void printParserOutput () {
+        for (Statement statement : parseList) {
+            System.out.println("Variable name: " + statement.getVariableName());
+
+            if (statement.getExpressionOperators().size() == 0) {
+                System.out.println("Value: " + statement.getValue().get(0).getFirstOperand());
+            } else {    
+                System.out.println("Expression value: " + "\n");
+                int index = 1;
+
+                for (Expression expression : statement.getValue()) {
+                    System.out.println("Expression " + index + ":");
+                    System.out.println("First parameter: " + expression.getFirstOperand());
+                    System.out.println("Operator: " + expression.getOperator());
+                    System.out.println("Second parameter: " + expression.getSecondOperand());
+
+                    if (index - 1 != statement.getExpressionOperators().size()) {
+                        System.out.println("Connection operator: " + statement.getExpressionOperators().get(index - 1));
+                    }
+                    
+                    System.out.println();
+                    index++;
+                }
+            }
+
+            System.out.println();
+        }
+    }
 }

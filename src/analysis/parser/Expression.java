@@ -15,4 +15,16 @@ public class Expression {
         this.operator = operator;
         this.secondOperand = secondOperand;
     }
+
+    public String getFirstOperand () {
+        return this.firstOperand;
+    }
+
+    public String getOperator () {
+        return this.operator;
+    }
+
+    public String getSecondOperand () {
+        return this.secondOperand;
+    }
 }

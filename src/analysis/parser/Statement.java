@@ -15,6 +15,18 @@ public class Statement {
         expressionOperators = new ArrayList<>();
     }
 
+    public String getVariableName () {
+        return this.variableName;
+    }
+
+    public List<Expression> getValue () {
+        return this.value;
+    }
+
+    public List<String> getExpressionOperators () {
+        return this.expressionOperators;
+    }
+
     public void setValue (List<Expression> value) {
         this.value = value;
     }
