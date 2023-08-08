@@ -243,7 +243,7 @@ public void normalizeChomsky (Grammar g) {
   this.eliminateInaccesibleSymbols(g);
   ...
 ```
-The beginning of the method is presented above and under below sentence the implementation of the while-loop which performs normalization is presented.
+The beginning of the method is presented above and below the implementation of the while-loop which performs normalization is shown.
 
 ```
   while (!result.matches("[a-z]|[A-Z][A-Z]")) {
